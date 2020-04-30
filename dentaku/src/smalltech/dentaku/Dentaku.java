@@ -8,11 +8,14 @@ import javax.swing.*;
 
 public class Dentaku extends JFrame{
 	
+	final String ZERO_DIV_ERR_MESSAGE = "エラー：0による割り算\n演算子から入力し直して下さい";
 	JPanel contentPane = new JPanel();
 	BorderLayout borderLayout1 = new BorderLayout();
 	JTextField result_text_field = new JTextField(""); 
-	private String dentakuState;
-	private double firstNum;
+	private String currentOp;
+	private double stackedValue;
+	private double currentTFValue;
+	private boolean afterOpButton = false;
 	
 	public Dentaku() {
 		//ウィンドウについての設定
@@ -42,33 +45,50 @@ public class Dentaku extends JFrame{
 		keyPanel.add(new NumButton(1), 8);
 		keyPanel.add(new NumButton(2), 9);
 		keyPanel.add(new NumButton(3), 10);
-		keyPanel.add(new CalcButton("－"), 11);
+		keyPanel.add(new CalcButton("-"), 11);
 		keyPanel.add(new NumButton(0), 12); 
 		keyPanel.add(new JButton("."), 13);
-		keyPanel.add(new CalcButton("＋"), 14);
-		keyPanel.add(new JButton("＝"), 15);
+		keyPanel.add(new CalcButton("+"), 14);
+		keyPanel.add(new CalcButton("="), 15);
 		
 		contentPane.add(new JButton("C"), BorderLayout.SOUTH);
 		this.setVisible(true);
 		
 	}
 	
-	public void appendResult(String c) {
+	public double readValueTF() {
+		return Double.parseDouble(result_text_field.getText());
+	}
+	
+	public void appendCharTF(String c) {
 		result_text_field.setText(result_text_field.getText() + c);
 	}
 	
+	public void resetTF() {
+		result_text_field.setText("");
+	}
+	
+	public void alert(String message) {
+		java.awt.Toolkit.getDefaultToolkit().beep();
+		JOptionPane.showMessageDialog(this, message);
+	}
+	
 	public class NumButton extends JButton implements ActionListener {
-		private int button_num;
+		private int buttonNum;
 		
 		public NumButton(int num) {
 			super(Integer.toString(num));
-			button_num = num;
+			buttonNum = num;
 			this.addActionListener(this); 
 		}
 		
 		public void actionPerformed(ActionEvent e) {
-			String keyNumber = Integer.toString(button_num);
-			appendResult(keyNumber);
+			String keyNumber = Integer.toString(buttonNum);
+			if(afterOpButton) {
+				resetTF();
+				afterOpButton = false;
+			}
+			appendCharTF(keyNumber);
 		}
 	}
 	
@@ -81,11 +101,28 @@ public class Dentaku extends JFrame{
 		}
 		
 		public void actionPerformed(ActionEvent e) {
-			dentakuState = calcKind;
-			firstNum = Double.parseDouble(result_text_field.getText());
-			java.awt.Toolkit.getDefaultToolkit().beep();//ビープ音お試し
-			JOptionPane.showMessageDialog(Dentaku.this, "calc button pushed");//警告表示お試し
-			System.out.println("calc button pushed");
+			if(calcKind.equals("=")) {
+				currentTFValue = readValueTF();
+				if (currentOp.equals("+")) {
+					stackedValue += currentTFValue;
+				} else if (currentOp.equals("-")) {
+					stackedValue -= currentTFValue;
+				} else if (currentOp.equals("×")) {
+					stackedValue *= currentTFValue;
+				} else if (currentOp.equals("÷")) {
+					if (currentTFValue == 0) {
+						alert(ZERO_DIV_ERR_MESSAGE);//stackedValueの値を据え置く
+					} else {
+						stackedValue /= currentTFValue;
+					}
+				}
+				resetTF();
+				appendCharTF(Double.toString(stackedValue));
+			} else {
+				currentOp = calcKind;
+				afterOpButton = true;
+			}
+			stackedValue = readValueTF();
 		}
 	}
 
