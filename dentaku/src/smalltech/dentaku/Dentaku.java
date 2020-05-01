@@ -9,9 +9,11 @@ import javax.swing.*;
 public class Dentaku extends JFrame{
 	
 	final String ZERO_DIV_ERR_MESSAGE = "エラー：0による割り算\n演算子から入力し直して下さい";
+	JPanel flamePane = new JPanel();
 	JPanel contentPane = new JPanel();
 	BorderLayout borderLayout1 = new BorderLayout();
-	JTextField textField = new JTextField(""); 
+	JTextField textField = new JTextField("");
+	JTextArea memoArea = new JTextArea("memo");
 	private String currentOp;
 	private double stackedValue;
 	private boolean afterOpButton = false;
@@ -19,11 +21,15 @@ public class Dentaku extends JFrame{
 	public Dentaku() {
 		//ウィンドウについての設定
 		this.setTitle("dentaku");
-		this.setSize(300, 500);
+		this.setSize(600, 500);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		flamePane.setLayout(new GridLayout(1, 2)); 
+		this.setContentPane(flamePane);
 		contentPane.setLayout(borderLayout1);
-		this.setContentPane(contentPane);
+		flamePane.add(contentPane, 0);
+		memoArea.setLineWrap(true);
+		flamePane.add(memoArea, 1);
 		
 		//出力用テキストフィールド
 		contentPane.add(textField, BorderLayout.NORTH); 
