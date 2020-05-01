@@ -14,7 +14,6 @@ public class Dentaku extends JFrame{
 	JTextField result_text_field = new JTextField(""); 
 	private String currentOp;
 	private double stackedValue;
-	private double currentTFValue;
 	private boolean afterOpButton = false;
 	
 	public Dentaku() {
@@ -47,11 +46,11 @@ public class Dentaku extends JFrame{
 		keyPanel.add(new NumButton(3), 10);
 		keyPanel.add(new CalcButton("-"), 11);
 		keyPanel.add(new NumButton(0), 12); 
-		keyPanel.add(new JButton("."), 13);
+		keyPanel.add(new DotButton(), 13);
 		keyPanel.add(new CalcButton("+"), 14);
 		keyPanel.add(new CalcButton("="), 15);
 		
-		contentPane.add(new JButton("C"), BorderLayout.SOUTH);
+		contentPane.add(new ClearButton(), BorderLayout.SOUTH);
 		this.setVisible(true);
 		
 	}
@@ -92,14 +91,29 @@ public class Dentaku extends JFrame{
 		}
 	}
 	
+	public class DotButton extends JButton implements ActionListener {
+		public DotButton() {
+			super(".");
+			this.addActionListener(this); 
+		}
+		public void actionPerformed(ActionEvent e) {
+			if(afterOpButton) {
+				resetTF();
+				appendCharTF("0");
+				afterOpButton = false;
+			}
+			appendCharTF(".");
+		}
+	}
+	
 	public class CalcButton extends JButton implements ActionListener {
 		private String calcKind;
+		private double currentTFValue;
 		public CalcButton(String kind) {
 			super(kind);		
 			calcKind = kind;
 			this.addActionListener(this); 
 		}
-		
 		public void actionPerformed(ActionEvent e) {
 			if(calcKind.equals("=")) {
 				currentTFValue = readValueTF();
@@ -125,5 +139,16 @@ public class Dentaku extends JFrame{
 			stackedValue = readValueTF();
 		}
 	}
-
+	
+	public class ClearButton extends JButton implements ActionListener {
+		public ClearButton() {
+			super("C");
+			this.addActionListener(this); 
+		}
+		public void actionPerformed(ActionEvent e) {
+			stackedValue = 0;
+			afterOpButton = false;
+			resetTF();
+		}
+	}
 }
