@@ -11,7 +11,7 @@ public class Dentaku extends JFrame{
 	final String ZERO_DIV_ERR_MESSAGE = "エラー：0による割り算\n演算子から入力し直して下さい";
 	JPanel contentPane = new JPanel();
 	BorderLayout borderLayout1 = new BorderLayout();
-	JTextField result_text_field = new JTextField(""); 
+	JTextField textField = new JTextField(""); 
 	private String currentOp;
 	private double stackedValue;
 	private boolean afterOpButton = false;
@@ -26,7 +26,7 @@ public class Dentaku extends JFrame{
 		this.setContentPane(contentPane);
 		
 		//出力用テキストフィールド
-		contentPane.add(result_text_field, BorderLayout.NORTH); 
+		contentPane.add(textField, BorderLayout.NORTH); 
 		
 		//ボタン部分
 		JPanel keyPanel = new JPanel();
@@ -56,15 +56,15 @@ public class Dentaku extends JFrame{
 	}
 	
 	public double readValueTF() {
-		return Double.parseDouble(result_text_field.getText());
+		return Double.parseDouble(textField.getText());
 	}
 	
 	public void appendCharTF(String c) {
-		result_text_field.setText(result_text_field.getText() + c);
+		textField.setText(textField.getText() + c);
 	}
 	
 	public void resetTF() {
-		result_text_field.setText("");
+		textField.setText("");
 	}
 	
 	public void alert(String message) {
